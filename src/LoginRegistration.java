@@ -6,6 +6,60 @@ import java.awt.event.ActionListener;
 public class LoginRegistration {
     static Student s1 = new Student();
 
+    // success box frame
+    static void successFrame(String successMsg){
+        JFrame successDialog = new JFrame("Success");
+
+        JLabel messageLabel = new JLabel(successMsg);
+        messageLabel.setBounds(20, 20, 300, 40);
+
+        JButton successButton = new JButton("OK");
+        successButton.setBounds(100, 75, 100, 40);
+        successButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                successDialog.dispose();
+            }
+        });
+
+        // adding components to frame
+        successDialog.add(messageLabel);
+        successDialog.add(successButton);
+
+        successDialog.setSize(320,170);//width and height
+        successDialog.setLayout(null);//using no layout managers
+        successDialog.setVisible(true);//making the frame visible
+        successDialog.setLocationRelativeTo(null);//make the JFrame appear to center of screen
+        successDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
+    }
+
+    // error box frame
+    static void errorDialogBox(String errMsg){
+        JFrame errorDialog = new JFrame("Error");
+
+        JLabel messageLabel = new JLabel(errMsg);
+        messageLabel.setBounds(20, 20, 300, 40);
+
+        JButton errorButton = new JButton("OK");
+        errorButton.setBounds(100, 75, 100, 40);
+        errorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                errorDialog.dispose();
+            }
+        });
+
+        // adding components to frame
+        errorDialog.add(messageLabel);
+        errorDialog.add(errorButton);
+
+        errorDialog.setSize(320,170);//width and height
+        errorDialog.setLayout(null);//using no layout managers
+        errorDialog.setVisible(true);//making the frame visible
+        errorDialog.setLocationRelativeTo(null);//make the JFrame appear to center of screen
+        errorDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
+    }
+
     // method for login form
     static void LoginForm(){
         JFrame loginFrame = new JFrame("LoginRegistration");// generating new form for the login form
@@ -30,12 +84,45 @@ public class LoginRegistration {
         passwordField.setBounds(100,80, 200,30);
 
         // login button
-        JButton loginButton = new JButton("LoginRegistration");//creating instance of JButton
+        JButton loginButton = new JButton("Login");//creating instance of JButton
         loginButton.setBounds(20,130,280, 40);//x axis, y axis, width, height
         loginButton.setBackground(Color.gray);
         loginButton.setOpaque(true);
         loginButton.setBorderPainted(false);
         loginButton.setForeground(Color.WHITE);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                // if the input field is empty
+                if(username.isEmpty() || String.valueOf(passwordField.getPassword()).isEmpty()){
+                    // generating dialogbox
+                    errorDialogBox("Fields can't be empty");
+                    return;
+                }
+                int count = 0;
+                while (s1.students.size() > count) {
+                    if(s1.students.get(count).userName.equals(username)){// username is correct then check password
+                        String password = String.valueOf(passwordField.getPassword());
+                        if(s1.students.get(count).password.equals(password)){
+                            // redirect to dashboard.
+                            successFrame("Login Successfully.");
+                        }
+                        else{
+                            // if password did not matched
+                            errorDialogBox("Password did not matched!");
+                            break;
+                        }
+                    }else{
+                        // username not found
+                        System.out.println("User do not exists.");
+                        errorDialogBox("User do not exists.");
+                        break;
+                    }
+                    ++count;
+                }
+            }
+        });
 
         // new account label
         JLabel newAccountLabel = new JLabel("Don't have an account? ");
@@ -146,78 +233,22 @@ public class LoginRegistration {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
+                // if the input field is empty
+                if(studentName.isEmpty() || studentID.isEmpty() || username.isEmpty() || password.isEmpty()){
+                    // generating dialogbox
+                    errorDialogBox("Fields can't be empty");
+                    return;
+                }
+
                 // check if username or id is already registered in the List
                 int count = 0;
                 while (s1.students.size() > count) {
-                    String errorMsg;
-
-                    // if the input field is empty
-                    if(studentName.isEmpty() || studentID.isEmpty() || username.isEmpty() || password.isEmpty()){
-                        errorMsg = "Fields can't be empty";
-//                        generating dialogbox
-                        JFrame errorDialog = new JFrame("Error");
-
-                        JLabel messageLabel = new JLabel(errorMsg);
-                        messageLabel.setBounds(20, 20, 300, 40);
-
-                        JButton errorButton = new JButton("OK");
-                        errorButton.setBounds(100, 75, 100, 40);
-                        errorButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                errorDialog.dispose();
-                                studentNameField.setText("");
-                                studentIdField.setText("");
-                                usernameField.setText("");
-                                passwordField.setText("");;
-                            }
-                        });
-
-//                        adding components to frame
-                        errorDialog.add(messageLabel);
-                        errorDialog.add(errorButton);
-
-                        errorDialog.setSize(320,170);//width and height
-                        errorDialog.setLayout(null);//using no layout managers
-                        errorDialog.setVisible(true);//making the frame visible
-                        errorDialog.setLocationRelativeTo(null);//make the JFrame appear to center of screen
-                        errorDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
-                        break;
-                    }
-
                     // if the user already exists
                     if(s1.students.get(count).userName == username || s1.students.get(count).studentID == id){
-                            errorMsg = "Username or Student ID is already registered.";
+
                         //  generating error dialogbox
-                        JFrame errorDialog = new JFrame("Error");
-
-                        JLabel messageLabel = new JLabel(errorMsg);
-                        messageLabel.setBounds(20, 20, 300, 40);
-
-                        JButton errorButton = new JButton("OK");
-                        errorButton.setBounds(100, 75, 100, 40);
-                        errorButton.addActionListener(new ActionListener() {//when user is knowledgeable to his message clear the registration form
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                errorDialog.dispose();
-                                studentNameField.setText("");
-                                studentIdField.setText("");
-                                usernameField.setText("");
-                                passwordField.setText("");;
-                            }
-                        });
-
-                        // adding components to frame
-                        errorDialog.add(messageLabel);
-                        errorDialog.add(errorButton);
-
-                        // Setting the error dialog frame
-                        errorDialog.setSize(320,170);//width and height
-                        errorDialog.setLayout(null);//using no layout managers
-                        errorDialog.setVisible(true);//making the frame visible
-                        errorDialog.setLocationRelativeTo(null);//make the JFrame appear to center of screen
-                        errorDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
-                        break;//break the loop once the error is found
+                        errorDialogBox("Username or Student ID is already registered.");
+                        return;
                     }
                     count++;
                 }
@@ -226,7 +257,7 @@ public class LoginRegistration {
                 Student s2 = new Student();
                 s2.setNewStudent(studentName, id, false, new int[]{},username, password);
                 s1.students.add(s2);// add the student data to students array pool
-
+                successFrame("Registered Successfully.");
             }
         });
 
@@ -272,6 +303,6 @@ public class LoginRegistration {
         registerForm.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
     }
     public static void main(String args[]){
-        RegistrationForm();
+        LoginForm();
     }
 }
