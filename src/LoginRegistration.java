@@ -2,9 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class LoginRegistration {
     static Student s1 = new Student();
+    ArrayList<Student> currentStudent = new ArrayList<Student>();
 
     // success box frame
     static void successFrame(String successMsg){
@@ -21,6 +23,7 @@ public class LoginRegistration {
                 successDialog.dispose();
             }
         });
+        successButton.setFocusPainted(false);
 
         // adding components to frame
         successDialog.add(messageLabel);
@@ -48,6 +51,7 @@ public class LoginRegistration {
                 errorDialog.dispose();
             }
         });
+        errorButton.setFocusPainted(false);
 
         // adding components to frame
         errorDialog.add(messageLabel);
@@ -90,6 +94,8 @@ public class LoginRegistration {
         loginButton.setOpaque(true);
         loginButton.setBorderPainted(false);
         loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,8 +111,15 @@ public class LoginRegistration {
                     if(s1.students.get(count).userName.equals(username)){// username is correct then check password
                         String password = String.valueOf(passwordField.getPassword());
                         if(s1.students.get(count).password.equals(password)){
-                            // redirect to dashboard.
-                            successFrame("Login Successfully.");
+                            loginFrame.dispose();
+
+                            // get the current student data and set
+                            LoginRegistration loginData = new LoginRegistration();
+                            loginData.currentStudent.add(s1.students.get(count));
+
+                            // initialize the dashboard
+                            Dashboard dash = new Dashboard();
+                            dash.Dashboard(s1.students, count);// array and current count of user is passed to dashboard
                         }
                         else{
                             // if password did not matched
@@ -135,6 +148,7 @@ public class LoginRegistration {
         newAccountButton.setContentAreaFilled(false);
         newAccountButton.setBorderPainted(false);
         newAccountButton.setForeground(Color.BLUE);
+        newAccountButton.setFocusPainted(false);
 
         // if user don't have an account then onclick close the login frame and open register form frame
         newAccountButton.addActionListener(new ActionListener() {
@@ -212,6 +226,8 @@ public class LoginRegistration {
         registerButton.setOpaque(true);
         registerButton.setBorderPainted(false);
         registerButton.setForeground(Color.WHITE);
+        registerButton.setFocusPainted(false);
+
 
         registerButton.addActionListener(new ActionListener() {// when user enters the data and hits submit
             @Override
@@ -272,6 +288,7 @@ public class LoginRegistration {
         oldAccountButton.setContentAreaFilled(false);
         oldAccountButton.setBorderPainted(false);
         oldAccountButton.setForeground(Color.BLUE);
+        oldAccountButton.setFocusPainted(false);
 
         // if user don't have an account then onclick close the login frame and open register form frame
         oldAccountButton.addActionListener(new ActionListener() {
@@ -302,7 +319,11 @@ public class LoginRegistration {
         registerForm.setLocationRelativeTo(null);//make the JFrame appear to center of screen
         registerForm.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
     }
-    public static void main(String args[]){
+
+    public static void main(String[] args) {
         LoginForm();
+
+//        Dashboard dashboard = new Dashboard();
+//        dashboard.Dashboard();
     }
 }
