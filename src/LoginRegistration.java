@@ -36,7 +36,7 @@ public class LoginRegistration {
         successDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
     }
 
-    // error box frame
+    //  this is error box frame
     static void errorDialogBox(String errMsg){
         JFrame errorDialog = new JFrame("Error");
 
