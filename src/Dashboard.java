@@ -6,13 +6,17 @@ import java.util.ArrayList;
 
 public class Dashboard extends LoginRegistration {
     ArrayList<Events> bookedEvents = new ArrayList<Events>();
+    ArrayList<Events> totalEvents = new ArrayList<Events>();
+    ArrayList<Student> dashStudents = new ArrayList<Student>();
+    int finalCountFromDashboard;
 
-    //    public void Dashboard(ArrayList<Student> students, int count){
-    public void Dashboard(){
+        public void Dashboard(ArrayList<Student> students, int count){
+            dashStudents = students;
+            finalCountFromDashboard = count;
+        // public void Dashboard(){
         JFrame DashboardFrame = new JFrame("Dashboard");
 
-//        JLabel greetingLabel = new JLabel("Welcome, " + students.get(count).studentName + "!");// greet user with his name
-        JLabel greetingLabel = new JLabel("Welcome, " + "!");// greet user with his name
+         JLabel greetingLabel = new JLabel("Welcome, " + students.get(count).studentName + "!");// greet user with his name
         greetingLabel.setBounds(20, 10, 300, 40);
 
         JButton viewEvents, myBookedEvents, logout;
@@ -84,9 +88,9 @@ public class Dashboard extends LoginRegistration {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DashboardFrame.dispose();
-//                LoginRegistration login = new LoginRegistration();
-//                login.currentStudent = students;
-//                login.LoginForm();
+                LoginRegistration login = new LoginRegistration();
+                login.currentStudent = students;
+                login.LoginForm();
             }
         });
 
@@ -176,7 +180,7 @@ public class Dashboard extends LoginRegistration {
             @Override
             public void actionPerformed(ActionEvent e) {
                 eventsFrame.dispose();
-                Dashboard();
+                Dashboard(dashStudents, finalCountFromDashboard);
             }
         });
 
@@ -356,8 +360,14 @@ public class Dashboard extends LoginRegistration {
         eventsFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//close frame on close
     }
 
+    // refresh frame
+    public void refreshedBookedFrame(){
+        BookedEventsFrame(totalEvents);
+    }
+
     // booked events frame
     public void BookedEventsFrame(ArrayList<Events> events){
+        totalEvents = events;
         JFrame eventsFrame = new JFrame("Booked Events");
 
         // go back to dashboard
@@ -372,7 +382,7 @@ public class Dashboard extends LoginRegistration {
             @Override
             public void actionPerformed(ActionEvent e) {
                 eventsFrame.dispose();
-                Dashboard();
+                Dashboard(dashStudents, finalCountFromDashboard);
             }
         });
 
@@ -426,6 +436,9 @@ public class Dashboard extends LoginRegistration {
             eventDate.setForeground(Color.gray);
 
             // event Type
+            int firstYbound = 120;
+            int secondYbound = 360;
+
             // if it is online event
             if(events.get(count).isOnlineEvent == true){
                 JLabel eventType = new JLabel("Online Event");
@@ -443,15 +456,33 @@ public class Dashboard extends LoginRegistration {
             }
             else if(events.get(count).isExcursionEvent == true){// if external event
                 JLabel eventType = new JLabel("External Event");
-                eventType.setBounds(20, 300, 100, 50);
+                int yBound;
+
+                if(events.size() == 2){
+                    yBound = secondYbound;
+                }
+                else{
+                    yBound = firstYbound;
+                }
+
+                int yBoundExternalTitle;
+
+                if(events.size() == 2){
+                    yBoundExternalTitle = 300;
+                }
+                else{
+                    yBoundExternalTitle = 100;
+                }
+
+                eventType.setBounds(20, yBoundExternalTitle, 100, 50);
                 eventType.setForeground(Color.gray);
 
                 JLabel organisationName = new JLabel(events.get(count).organisationName);
-                organisationName.setBounds(20, 360, 150, 50);
+                organisationName.setBounds(20, yBound, 150, 50);
                 organisationName.setForeground(Color.gray);
 
                 JLabel organisationLocation = new JLabel(", " + events.get(count).organisationLocation);
-                organisationLocation.setBounds(95, 360, 150, 50);
+                organisationLocation.setBounds(95, yBound, 150, 50);
                 organisationLocation.setForeground(Color.gray);
 
                 eventsFrame.add(eventType);
@@ -496,7 +527,9 @@ public class Dashboard extends LoginRegistration {
                 cancelBookedSeat.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-
+                        bookedEvents.remove(finalCount);
+                        eventsFrame.dispose();
+                        refreshedBookedFrame();
                         successFrame("Event Cancelled Successfully.");
                     }
                 });
